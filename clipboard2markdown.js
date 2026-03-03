@@ -173,16 +173,27 @@
       }
     });
 
-    pastebin.addEventListener('paste', function () {
-      setTimeout(function () {
-        var html = pastebin.innerHTML;
-        var markdown = convert(html);
-        // output.value = markdown;
-        insert(output, markdown);
-        wrapper.classList.remove('hidden');
-        output.focus();
-        output.select();
-      }, 200);
+    function showMarkdown(html) {
+      var markdown = convert(html);
+      insert(output, markdown);
+      wrapper.classList.remove('hidden');
+      output.focus();
+      output.select();
+    }
+
+    pastebin.addEventListener('paste', function (event) {
+      var clipboardData = event.clipboardData || window.clipboardData;
+      var html = clipboardData && clipboardData.getData('text/html');
+      if (html) {
+        event.preventDefault();
+        showMarkdown(html);
+      } else {
+        // Fallback for browsers without Clipboard API: let the browser
+        // paste into the contenteditable div and read its innerHTML.
+        setTimeout(function () {
+          showMarkdown(pastebin.innerHTML);
+        }, 200);
+      }
     });
   });
 })();

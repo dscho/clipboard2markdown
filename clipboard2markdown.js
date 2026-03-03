@@ -127,6 +127,7 @@
   };
 
   var turndownService = new TurndownService();
+  turndownService.use(turndownPluginGfm.gfm);
 
   var convert = function (str) {
     return escape(turndownService.turndown(str, { converters: pandoc, gfm: true }));
